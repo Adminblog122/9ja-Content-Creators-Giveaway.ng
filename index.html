@@ -170,9 +170,9 @@
     <p>Share your unique referral link <strong>3 times</strong> to unlock the claim button.</p>
 
     <div class="d-flex justify-content-center gap-3 my-3">
-      <button class="btn btn-success" onclick="incrementShare()">WhatsApp</button>
-      <button class="btn btn-info" onclick="incrementShare()">Facebook</button>
-      <button class="btn btn-warning" onclick="incrementShare()">Telegram</button>
+      <button class="btn btn-success" onclick="shareLink('whatsapp')">WhatsApp</button>
+      <button class="btn btn-info" onclick="shareLink('facebook')">Facebook</button>
+      <button class="btn btn-warning" onclick="shareLink('telegram')">Telegram</button>
     </div>
 
     <div class="my-3">
@@ -246,6 +246,26 @@
 
     // Share Progress Logic
     let shareCount = 0;
+    const referralLink = encodeURIComponent("https://yourdomain.com?ref=USER123"); // replace with your real domain
+
+    function shareLink(platform) {
+      let shareURL = "";
+
+      if (platform === "whatsapp") {
+        shareURL = `https://api.whatsapp.com/send?text=Join me on Naija Creator Boost! 🎥 Unlock free gadgets to start content creation. Click here: ${referralLink}`;
+      } 
+      else if (platform === "facebook") {
+        shareURL = `https://www.facebook.com/sharer/sharer.php?u=${referralLink}`;
+      } 
+      else if (platform === "telegram") {
+        shareURL = `https://t.me/share/url?url=${referralLink}&text=Join me on Naija Creator Boost! 🎥`;
+      }
+
+      window.open(shareURL, "_blank");
+
+      // Track share count
+      incrementShare();
+    }
 
     function incrementShare() {
       shareCount++;
