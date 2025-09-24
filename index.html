@@ -1,306 +1,623 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Naija Creator Boost</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Naija Creator Boost — Share & Unlock Giveaway</title>
 
-  <!-- Bootstrap -->
+  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- AOS Scroll Animations -->
+  <!-- AOS (Animate on Scroll) -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
-    /* === GLOBAL STYLES === */
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(180deg, #071129 0%, #081329 40%, #061026 100%);
-      color: #fff;
-      overflow-x: hidden;
+    :root{
+      --brand:#0d6efd;
+      --accent:#ffb703;
+      --bg-dark:#071129;
+      --panel: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "Poppins", system-ui, Arial, sans-serif;
+      background: linear-gradient(180deg,#071129 0%,#081329 40%,#061026 100%);
+      color:#e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    h1, h2, h3, h4 {
-      font-weight: bold;
-    }
-
-    /* === LOADING SCREEN === */
+    /* ===== LOADING SCREEN (centered) ===== */
     #loading-screen {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #0f1723;
+      inset: 0;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      z-index: 9999;
-      transition: opacity 0.6s ease;
+      justify-content: center;
+      flex-direction: column;
+      background: #0f1723;
+      z-index: 99999;
+      transition: opacity .6s ease, visibility .6s;
     }
-
-    #loading-screen.hidden {
-      opacity: 0;
-      pointer-events: none;
-      visibility: hidden;
-    }
+    #loading-screen.hidden { opacity:0; visibility:hidden; pointer-events:none; }
 
     .spinner {
-      width: 70px;
-      height: 70px;
-      border: 8px solid rgba(255,255,255,0.2);
-      border-top: 8px solid #ffb703;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 15px;
+      width:72px; height:72px;
+      border:8px solid rgba(255,255,255,0.12);
+      border-top-color: var(--accent);
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+      margin-bottom:14px;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* === HERO SECTION === */
-    .hero {
-      text-align: center;
-      padding: 120px 20px 80px;
-    }
-
-    .hero h1 {
-      font-weight: 700;
-      font-size: 2.8rem;
-      color: #ffb703;
-    }
-
-    .hero p {
-      max-width: 600px;
-      margin: 15px auto 0;
-      color: #c9dff9;
-    }
-
-    /* === COUNTER SECTION === */
-    .counter {
-      font-size: 3rem;
-      font-weight: bold;
-      color: #00ffcc;
-    }
-
-    /* === TESTIMONIALS === */
-    .testimonial {
-      background: rgba(255,255,255,0.05);
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      transition: 0.3s;
-    }
-
-    .testimonial:hover {
-      transform: translateY(-5px);
-      background: rgba(255,255,255,0.1);
-    }
-
-    .testimonial img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-      border: 2px solid #ffb703;
-    }
-
-    /* === CLAIM BUTTON === */
-    #claimBtn {
-      display: none;
-      background: linear-gradient(90deg, #ffb703, #ff8800);
-      border: none;
+    /* ===== WELCOME SCREEN ===== */
+    #welcome-screen {
+      position: fixed;
+      inset:0;
+      background:linear-gradient(135deg,rgba(13,110,253,0.92),rgba(102,16,242,0.92));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index: 99998;
       color: white;
-      font-weight: bold;
-      padding: 12px 20px;
-      border-radius: 8px;
-      transition: 0.3s;
+      padding: 24px;
+      text-align:center;
+      transition: opacity .5s ease, visibility .5s;
+    }
+    #welcome-screen.hidden { opacity:0; visibility:hidden; pointer-events:none; }
+    #welcome-screen .card {
+      background: rgba(255,255,255,0.06);
+      border: none;
+      border-radius: 14px;
+      padding: 26px;
+      max-width:520px;
+      width:100%;
+      box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+    }
+    #enterBtn { background:#fff; color:var(--brand); font-weight:600; border-radius:10px; padding:10px 18px; border:none; }
+
+    /* ===== HERO & LAYOUT ===== */
+    .container-lg { padding-top:28px; padding-bottom:28px; }
+    .hero { padding:70px 18px 36px; text-align:center;}
+    .brand { color:var(--accent); font-weight:700; letter-spacing:.6px; font-size:1.3rem; }
+    .lead { color:#cfe7ff; opacity:.9; max-width:760px; margin:0 auto; }
+
+    .card-panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:20px;
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
     }
 
-    #claimBtn:hover {
-      transform: scale(1.05);
-      background: linear-gradient(90deg, #ff8800, #ffb703);
+    /* progress bars */
+    .progress { height:18px; background:rgba(255,255,255,0.08); border-radius:10px; overflow:hidden; }
+    .progress .progress-bar { transition: width .8s ease; background: linear-gradient(90deg,var(--accent),var(--brand)); }
+
+    /* share buttons */
+    .share-btn { min-width:120px; }
+
+    /* robot */
+    .robot-top { position: fixed; top:8px; left:50%; transform:translateX(-50%); width:84px; height:84px; z-index:9999; opacity:0; transition:opacity .25s ease, transform .25s ease; pointer-events:none; }
+    .robot-top.visible { opacity:1; pointer-events:auto; }
+    .robot-top.dance { animation: robot-bop 1s ease-in-out infinite; }
+    @keyframes robot-bop { 0% { transform:translateX(-50%) translateY(0) rotate(-4deg);} 50% { transform:translateX(-50%) translateY(-10px) rotate(6deg);} 100% { transform:translateX(-50%) translateY(0) rotate(-4deg);} }
+
+    /* small responsive tweaks */
+    @media (max-width:720px){
+      .hero { padding:40px 12px 20px; }
+      .robot-top { display:none; }
     }
 
-    /* === FOOTER === */
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: rgba(0,0,0,0.3);
-      color: #c9dff9;
-      font-size: 0.9rem;
-    }
+    footer{ text-align:center; padding:18px 10px; color:#c9dff9; font-size:.9rem; }
+    .muted { color: rgba(230,238,248,0.7); }
   </style>
 </head>
 <body>
 
-  <!-- LOADING SCREEN -->
+  <!-- LOADING SCREEN (centered) -->
   <div id="loading-screen">
-    <div class="spinner"></div>
-    <h3 class="text-white">Loading...</h3>
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="muted">Preparing Naija Creator Boost...</div>
   </div>
 
-  <!-- HERO SECTION -->
-  <section class="hero" data-aos="fade-up">
-    <h1>Naija Creator Boost</h1>
-    <p>Help Nigerian creators kickstart their content journey! Apply, share, and unlock exclusive gadgets to create amazing videos without spending a dime.</p>
-  </section>
-
-  <!-- LIVE APPLICANTS COUNTER -->
-  <section class="text-center my-5" data-aos="zoom-in">
-    <h3>Total Applicants Today</h3>
-    <div id="applicantsCounter" class="counter">0</div>
-  </section>
-
-  <!-- APPLICATION FORM -->
-  <section class="container my-5" id="apply" data-aos="fade-up">
-    <h2 class="text-center mb-4">Apply Now</h2>
-    <form id="applyForm" class="mx-auto" style="max-width: 500px;">
-      <input type="text" id="name" class="form-control mb-3" placeholder="Full Name" required>
-      <input type="tel" id="phone" class="form-control mb-3" placeholder="WhatsApp Number" required>
-      <select id="category" class="form-select mb-3" required>
-        <option value="">Choose Content Type</option>
-        <option>Comedy</option>
-        <option>Fashion</option>
-        <option>Music</option>
-        <option>Education</option>
-        <option>Gaming</option>
-      </select>
-      <button type="submit" class="btn btn-primary w-100">Submit</button>
-    </form>
-  </section>
-
-  <!-- SHARE PANEL -->
-  <section class="container text-center my-5" id="sharePanel" style="display:none;" data-aos="fade-up">
-    <h2>Share & Unlock Giveaway</h2>
-    <p>Share your unique referral link <strong>3 times</strong> to unlock the claim button.</p>
-
-    <div class="d-flex justify-content-center gap-3 my-3">
-      <button class="btn btn-success" onclick="shareLink('whatsapp')">WhatsApp</button>
-      <button class="btn btn-info" onclick="shareLink('facebook')">Facebook</button>
-      <button class="btn btn-warning" onclick="shareLink('telegram')">Telegram</button>
-    </div>
-
-    <div class="my-3">
-      Progress: <span id="shareCount">0</span>/3
-    </div>
-
-    <button id="claimBtn" onclick="unlockGiveaway()">Claim Giveaway</button>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section class="container my-5">
-    <h2 class="text-center mb-4" data-aos="fade-up">What Our Creators Say</h2>
-    <div class="row g-4">
-      <div class="col-md-4" data-aos="fade-right">
-        <div class="testimonial">
-          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
-          <p>"This platform helped me get my first phone for content creation!"</p>
-          <strong>- Chioma, Lagos</strong>
-        </div>
-      </div>
-      <div class="col-md-4" data-aos="fade-up">
-        <div class="testimonial">
-          <img src="https://randomuser.me/api/portraits/men/36.jpg" alt="">
-          <p>"I was stuck before, but now I create videos daily thanks to this giveaway!"</p>
-          <strong>- Emeka, Abuja</strong>
-        </div>
-      </div>
-      <div class="col-md-4" data-aos="fade-left">
-        <div class="testimonial">
-          <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="">
-          <p>"Sharing was easy and fun. I recommend this to every Nigerian creator."</p>
-          <strong>- Amina, Kano</strong>
-        </div>
+  <!-- WELCOME SCREEN (shows once; must click Enter) -->
+  <div id="welcome-screen" aria-hidden="false">
+    <div class="card">
+      <h2 class="mb-2">🎉 Welcome to Naija Creator Boost</h2>
+      <p class="muted mb-3">A free program to help new Nigerian creators get the basic gadgets they need. Click Enter to continue — this welcome screen will show only once.</p>
+      <div>
+        <button id="enterBtn">Enter Site</button>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- FOOTER -->
-  <footer>
-    &copy; 2025 Naija Creator Boost. All rights reserved.
-  </footer>
+  <!-- Robot (dances when share goal reached) -->
+  <div class="robot-top" id="robotTop" aria-hidden="true">
+    <svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img">
+      <g transform="translate(10,5)">
+        <rect x="42" y="0" width="4" height="8" rx="2" fill="#444"/>
+        <circle cx="44" cy="0" r="3.5" fill="#ffdd57"/>
+        <rect x="20" y="8" rx="8" ry="8" width="48" height="36" fill="#9ad3ff" stroke="#2b6fa6" stroke-width="2"/>
+        <circle cx="36" cy="26" r="4" fill="#1a1a1a"/>
+        <circle cx="52" cy="26" r="4" fill="#1a1a1a"/>
+        <rect x="36" y="34" width="16" height="4" rx="2" fill="#2b6fa6"/>
+        <rect x="26" y="44" rx="6" ry="6" width="36" height="32" fill="#6fc6ff" stroke="#2b6fa6" stroke-width="2"/>
+        <g class="arm-left" transform="translate(18,48)"><rect x="-8" y="-4" width="12" height="6" rx="3" fill="#9ad3ff" stroke="#2b6fa6" stroke-width="1.2"/><circle cx="-2" cy="0" r="3" fill="#2b6fa6"/></g>
+        <g class="arm-right" transform="translate(72,48)"><rect x="-4" y="-4" width="12" height="6" rx="3" fill="#9ad3ff" stroke="#2b6fa6" stroke-width="1.2"/><circle cx="8" cy="0" r="3" fill="#2b6fa6"/></g>
+        <rect x="30" y="74" width="10" height="6" rx="2" fill="#2b6fa6"/>
+        <rect x="54" y="74" width="10" height="6" rx="2" fill="#2b6fa6"/>
+      </g>
+    </svg>
+  </div>
 
-  <!-- Confetti Library -->
+  <!-- MAIN CONTENT -->
+  <main class="container-lg">
+    <header class="text-center hero" data-aos="fade-up">
+      <div class="brand mb-1">Naija Creator Boost</div>
+      <h1 class="mb-2" style="color:var(--accent)">Share to Unlock — Get Starter Gear</h1>
+      <p class="lead">Apply, share your unique link with friends and groups, and unlock a chance to win a starter kit (phone, mic, lights). Designed for creators in Nigeria.</p>
+    </header>
+
+    <!-- Applicants counter + giveaway progress -->
+    <section class="row g-4 align-items-center mb-4">
+      <div class="col-md-6" data-aos="fade-right">
+        <div class="card-panel">
+          <h4 class="mb-2">Total Applicants Today</h4>
+          <div id="applicantsCounter" style="font-size:2.6rem;font-weight:700;color:#00ffd1">0</div>
+          <p class="muted mb-0">Real-time number to show momentum.</p>
+        </div>
+      </div>
+
+      <div class="col-md-6" data-aos="fade-left">
+        <div class="card-panel">
+          <h4 class="mb-2">Giveaway Slots Filled</h4>
+          <div class="progress mb-2" style="height:20px;">
+            <div id="giveawayProgress" class="progress-bar" role="progressbar" style="width:0%">0%</div>
+          </div>
+          <p class="muted mb-0">Help us reach 100% to run the next round.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Application + share panel -->
+    <section class="row g-4">
+      <div class="col-lg-6" data-aos="fade-up">
+        <div class="card-panel">
+          <h3>Apply Now</h3>
+          <form id="applyForm" autocomplete="off">
+            <div class="mb-2">
+              <label class="muted small">Full name</label>
+              <input id="name" class="form-control bg-dark text-white" required placeholder="Jane Doe">
+            </div>
+            <div class="mb-2">
+              <label class="muted small">Phone (WhatsApp)</label>
+              <input id="phone" class="form-control bg-dark text-white" required placeholder="+234 812 345 6789">
+            </div>
+            <div class="mb-2">
+              <label class="muted small">Category</label>
+              <select id="category" class="form-select bg-dark text-white" required>
+                <option value="">Choose category</option>
+                <option>Comedy / Skits</option>
+                <option>Beauty / Fashion</option>
+                <option>Education / Tutorials</option>
+                <option>Music / Audio</option>
+                <option>Gaming</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="muted small">Short pitch (one line)</label>
+              <input id="pitch" class="form-control bg-dark text-white" placeholder="Why you should be selected">
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-lg" style="background:linear-gradient(90deg,var(--brand),#2563eb);color:white">Submit Application</button>
+            </div>
+
+            <div class="mt-2 muted small">After submit you'll get a unique referral link. Share it <strong id="requiredSharesDisplay">3</strong> times to unlock the claim button.</div>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-up">
+        <div class="card-panel">
+          <h3>Share & Progress</h3>
+
+          <!-- referral link + copy -->
+          <div id="sharePanel" style="display:none;">
+            <label class="muted small">Your referral link</label>
+            <div class="d-flex gap-2 mb-3">
+              <input id="refLink" class="form-control bg-dark text-white" readonly>
+              <button id="copyBtn" class="btn btn-outline-light">Copy</button>
+            </div>
+
+            <!-- share progress -->
+            <div class="mb-2 muted small">Share Progress</div>
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <div style="flex:1">
+                <div class="progress">
+                  <div id="shareProgress" class="progress-bar" style="width:0%"></div>
+                </div>
+              </div>
+              <div style="min-width:60px;text-align:center"><strong id="shareCount">0</strong>/<span id="requiredShares">3</span></div>
+            </div>
+
+            <!-- share buttons -->
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <button class="btn btn-success share-btn" id="whatsappBtn">WhatsApp</button>
+              <button class="btn btn-primary share-btn" id="facebookBtn">Facebook</button>
+              <button class="btn btn-info share-btn" id="telegramBtn">Telegram</button>
+              <button class="btn btn-outline-light share-btn" id="nativeShareBtn">Share</button>
+            </div>
+
+            <div class="text-center">
+              <button id="claimBtn" class="btn" style="display:none;background:linear-gradient(90deg,var(--accent),#ff8a00);color:#111;font-weight:700">Claim Giveaway</button>
+            </div>
+            <div class="mt-3 muted small">Tip: share on WhatsApp groups & status for fast unlock.</div>
+          </div>
+
+          <div id="noShare" class="muted small">Submit an application to get your referral link and start sharing.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="my-5" data-aos="fade-up">
+      <h3 class="text-center mb-4">What Creators Say</h3>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="testimonial">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+            <p class="mt-2">"This program gave me my first phone — now I create daily!"</p>
+            <strong>- Chioma, Lagos</strong>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="testimonial">
+            <img src="https://randomuser.me/api/portraits/men/36.jpg" alt="">
+            <p class="mt-2">"The share mechanic made it viral — I unlocked the claim fast."</p>
+            <strong>- Emeka, Abuja</strong>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="testimonial">
+            <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="">
+            <p class="mt-2">"Fast and simple. They contacted me via WhatsApp after claiming."</p>
+            <strong>- Amina, Kano</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mt-5">© 2025 Naija Creator Boost — For Nigerian creators</footer>
+  </main>
+
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
-  <!-- AOS Library -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
   <script>
-    AOS.init();
+  (function(){
+    AOS.init({ once:true, duration:700 });
 
-    /* === LOADING SCREEN === */
-    window.addEventListener("load", function() {
-      setTimeout(() => {
-        document.getElementById("loading-screen").classList.add("hidden");
-      }, 1000);
+    // CONFIG
+    const SITE_DOMAIN = 'https://yourdomain.com'; // <-- replace with your real site domain before production
+    const REQUIRED_SHARES = 3;
+    const MAX_GIVEAWAY_SLOTS = 2000; // for progress bar
+
+    // ELEMENTS
+    const loading = document.getElementById('loading-screen');
+    const welcome = document.getElementById('welcome-screen');
+    const enterBtn = document.getElementById('enterBtn');
+    const applyForm = document.getElementById('applyForm');
+    const sharePanel = document.getElementById('sharePanel');
+    const noShare = document.getElementById('noShare');
+    const refLinkInput = document.getElementById('refLink');
+    const copyBtn = document.getElementById('copyBtn');
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    const facebookBtn = document.getElementById('facebookBtn');
+    const telegramBtn = document.getElementById('telegramBtn');
+    const nativeShareBtn = document.getElementById('nativeShareBtn');
+    const shareProgressBar = document.getElementById('shareProgress');
+    const shareCountEl = document.getElementById('shareCount');
+    const requiredSharesEl = document.getElementById('requiredShares');
+    const claimBtn = document.getElementById('claimBtn');
+    const applicantsCounter = document.getElementById('applicantsCounter');
+    const giveawayProgressBar = document.getElementById('giveawayProgress');
+    const robot = document.getElementById('robotTop');
+
+    requiredSharesEl.textContent = REQUIRED_SHARES;
+    document.getElementById('requiredSharesDisplay').textContent = REQUIRED_SHARES;
+
+    // Hide loading after page load
+    window.addEventListener('load', () => {
+      setTimeout(()=> loading.classList.add('hidden'), 700);
     });
 
-    /* === LIVE APPLICANTS COUNTER === */
-    let applicants = 0;
-    const counterElement = document.getElementById("applicantsCounter");
-    const target = 1250; // example total
+    // Welcome screen: show once per visitor (localStorage)
+    const welcomeSeen = localStorage.getItem('welcomeSeen');
+    if (welcomeSeen) {
+      welcome.classList.add('hidden');
+    } else {
+      welcome.classList.remove('hidden');
+      // prevent scrolling while welcome shows
+      document.body.style.overflow = 'hidden';
+    }
+    enterBtn.addEventListener('click', () => {
+      welcome.classList.add('hidden');
+      localStorage.setItem('welcomeSeen','1');
+      document.body.style.overflow = ''; // restore scrolling
+    });
 
-    const counterInterval = setInterval(() => {
-      applicants += Math.floor(Math.random() * 10) + 5;
-      counterElement.textContent = applicants;
-      if (applicants >= target) {
-        clearInterval(counterInterval);
-      }
-    }, 100);
-
-    /* === SHARE LOGIC === */
-    let shareCount = 0;
-    const referralLink = encodeURIComponent("https://yourdomain.com?ref=USER123"); // change to your real domain
-
-    function shareLink(platform) {
-      let shareURL = "";
-
-      if (platform === "whatsapp") {
-        shareURL = `https://api.whatsapp.com/send?text=Join me on Naija Creator Boost! 🎥 Unlock free gadgets to start content creation. Click here: ${referralLink}`;
-      } 
-      else if (platform === "facebook") {
-        shareURL = `https://www.facebook.com/sharer/sharer.php?u=${referralLink}`;
-      } 
-      else if (platform === "telegram") {
-        shareURL = `https://t.me/share/url?url=${referralLink}&text=Join me on Naija Creator Boost! 🎥`;
-      }
-
-      window.open(shareURL, "_blank");
-
-      incrementShare();
+    // Utility: unique id generator
+    function generateId(){
+      return 'u' + Date.now().toString(36) + Math.floor(Math.random()*900 + 100);
     }
 
-    function incrementShare() {
-      shareCount++;
-      document.getElementById("shareCount").textContent = shareCount;
-      if (shareCount >= 3) {
-        document.getElementById("claimBtn").style.display = "inline-block";
+    // localStorage keys helpers
+    function storageKeyFor(id){ return 'nc_user_' + id; }
+    function getCurrentId(){ return localStorage.getItem('nc_current_id'); }
+
+    // Create referral URL
+    function buildReferralUrl(id){ return SITE_DOMAIN + '?ref=' + encodeURIComponent(id); }
+
+    // COPY LINK
+    copyBtn.addEventListener('click', async () => {
+      const url = refLinkInput.value;
+      try {
+        await navigator.clipboard.writeText(url);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(()=> copyBtn.textContent = 'Copy', 1500);
+        incrementShare(); // treat copy as share optionally
+      } catch(e) {
+        alert('Copy failed, select and copy manually.');
+      }
+    });
+
+    // Share helpers
+    async function shareVia(platform){
+      const id = getCurrentId();
+      if (!id) return alert('No referral link. Submit application first.');
+      const url = buildReferralUrl(id);
+      const text = encodeURIComponent('Join me on Naija Creator Boost — help me unlock my giveaway! ' + url);
+      let shareUrl = '';
+
+      if (platform === 'whatsapp') {
+        shareUrl = 'https://api.whatsapp.com/send?text=' + text;
+      } else if (platform === 'facebook') {
+        shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+      } else if (platform === 'telegram') {
+        shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + text;
+      }
+
+      // open share window
+      window.open(shareUrl, '_blank');
+      // increment after short delay
+      setTimeout(incrementShare, 700);
+    }
+
+    whatsappBtn.addEventListener('click', ()=> shareVia('whatsapp'));
+    facebookBtn.addEventListener('click', ()=> shareVia('facebook'));
+    telegramBtn.addEventListener('click', ()=> shareVia('telegram'));
+
+    // Native share (mobile)
+    nativeShareBtn.addEventListener('click', async () => {
+      const id = getCurrentId();
+      if (!id) return alert('No referral link. Submit application first.');
+      const url = buildReferralUrl(id);
+      try {
+        if (navigator.share) {
+          await navigator.share({ title:'Naija Creator Boost', text:'Help me unlock my giveaway!', url });
+          incrementShare();
+        } else {
+          await navigator.clipboard.writeText(url);
+          alert('Link copied to clipboard.');
+          incrementShare();
+        }
+      } catch(e){}
+    });
+
+    // Share counter + progress
+    function incrementShare(){
+      const id = getCurrentId();
+      if (!id) return;
+      const key = storageKeyFor(id);
+      const state = JSON.parse(localStorage.getItem(key) || '{}');
+      state.count = (state.count || 0) + 1;
+      localStorage.setItem(key, JSON.stringify(state));
+      updateShareUI(state.count);
+    }
+
+    function updateShareUI(count){
+      shareCountEl.textContent = count;
+      const pct = Math.min(100, Math.round((count / REQUIRED_SHARES) * 100));
+      shareProgressBar.style.width = pct + '%';
+      if (count >= REQUIRED_SHARES) {
+        claimBtn.style.display = 'inline-block';
+        robot.classList.add('visible','dance');
         launchConfetti();
+      } else {
+        claimBtn.style.display = 'none';
+        robot.classList.remove('dance');
       }
     }
 
-    function unlockGiveaway() {
-      alert("🎉 Congratulations! Your giveaway has been unlocked. We will contact you soon!");
+    // Claim logic demo
+    claimBtn.addEventListener('click', () => {
+      const id = getCurrentId();
+      if (!id) return;
+      const key = storageKeyFor(id);
+      const state = JSON.parse(localStorage.getItem(key) || '{}');
+      if (state.claimed) return alert('Already claimed.');
+      state.claimed = true;
+      localStorage.setItem(key, JSON.stringify(state));
+      // increment giveaway filled count
+      incrementGiveawayFilled();
+      alert('🎉 Claim recorded. We will contact you on WhatsApp.');
+      claimBtn.disabled = true;
+      claimBtn.textContent = 'Claimed';
+      // optional: naira rain
+      nairaRain();
+    });
+
+    // CONFETTI
+    function launchConfetti(){
+      confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 } });
     }
 
-    /* === CONFETTI === */
-    function launchConfetti() {
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 }
+    // NAIRA RAIN (small effect)
+    function nairaRain(){
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = 0;
+      container.style.top = 0;
+      container.style.width = '100%';
+      container.style.height = '100%';
+      container.style.pointerEvents = 'none';
+      container.style.zIndex = 99999;
+      document.body.appendChild(container);
+      const count = 30;
+      for (let i=0;i<count;i++){
+        const el = document.createElement('div');
+        el.textContent = '₦';
+        el.style.position='absolute';
+        el.style.left = Math.random()*100 + '%';
+        el.style.top = '-10%';
+        el.style.fontSize = (12 + Math.random()*28) + 'px';
+        el.style.color = '#28a745';
+        el.style.opacity = 0.9;
+        el.style.transform = 'translateY(0) rotate(0deg)';
+        el.style.transition = 'transform 4s linear, opacity 4s linear';
+        container.appendChild(el);
+        setTimeout(()=> {
+          el.style.transform = `translateY(${100 + Math.random()*50}vh) rotate(${Math.random()*360}deg)`;
+          el.style.opacity = 0.6;
+        }, 50 + Math.random()*400);
+        setTimeout(()=> el.remove(), 4500 + Math.random()*1000);
+      }
+      setTimeout(()=> container.remove(), 6000);
+    }
+
+    // APPLICATION SUBMIT
+    applyForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const category = document.getElementById('category').value;
+      const pitch = document.getElementById('pitch') ? document.getElementById('pitch').value.trim() : '';
+
+      if (!name || !phone || !category) {
+        return alert('Please fill the required fields.');
+      }
+
+      // create id + save state
+      const id = generateId();
+      localStorage.setItem('nc_current_id', id);
+      const payload = { id, name, phone, category, pitch, createdAt: new Date().toISOString(), count:0, claimed:false };
+      localStorage.setItem(storageKeyFor(id), JSON.stringify(payload));
+
+      // show share panel
+      refLinkInput.value = buildReferralUrl(id);
+      sharePanel.style.display = 'block';
+      noShare.style.display = 'none';
+      applyForm.style.display = 'none';
+
+      // restore UI
+      updateShareUI(0);
+
+      // optionally increment applicant counters
+      incrementApplicants(1);
+    });
+
+    // Restore existing user on page load
+    function restoreIfExists(){
+      const id = getCurrentId();
+      if (!id) return;
+      const state = JSON.parse(localStorage.getItem(storageKeyFor(id)) || '{}');
+      if (!state) return;
+      refLinkInput.value = buildReferralUrl(id);
+      sharePanel.style.display = 'block';
+      noShare.style.display = 'none';
+      applyForm.style.display = 'none';
+      updateShareUI(state.count || 0);
+      if (state.claimed) {
+        claimBtn.disabled = true;
+        claimBtn.textContent = 'Claimed';
+        claimBtn.style.display = 'inline-block';
+      }
+    }
+
+    // Applicants counter (animates up)
+    let applicants = Number(localStorage.getItem('nc_total_applicants') || 580); // start value
+    const applicantsTarget = 1250; // sample target to stop auto-increment
+    function incrementApplicants(n=1){
+      applicants = Math.min(applicants + n, 9999999);
+      localStorage.setItem('nc_total_applicants', applicants);
+      animateCounter(applicantsCounter, applicants);
+      // update giveaway progress (proportional to MAX_GIVEAWAY_SLOTS)
+      updateGiveawayProgress(applicants);
+    }
+
+    function animateCounter(el, to){
+      let from = Number(el.textContent.replace(/,/g,'')) || 0;
+      const duration = 700;
+      const start = performance.now();
+      requestAnimationFrame(function step(now){
+        const t = Math.min(1, (now - start) / duration);
+        const val = Math.floor(from + (to - from) * t);
+        el.textContent = val.toLocaleString();
+        if (t < 1) requestAnimationFrame(step);
       });
     }
 
-    /* === SHOW SHARE PANEL AFTER APPLY === */
-    document.getElementById("applyForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      document.getElementById("applyForm").style.display = "none";
-      document.getElementById("sharePanel").style.display = "block";
-    });
+    function updateGiveawayProgress(currentApplicants){
+      const percent = Math.min(100, Math.round((currentApplicants / MAX_GIVEAWAY_SLOTS) * 100));
+      giveawayProgressBar.style.width = percent + '%';
+      giveawayProgressBar.textContent = percent + '%';
+    }
+
+    // increment giveaway filled when a claim is made (demo)
+    function incrementGiveawayFilled(){
+      const filled = Number(localStorage.getItem('nc_giveaway_filled') || 0) + 1;
+      localStorage.setItem('nc_giveaway_filled', filled);
+      // reflect in applicants and progress
+      incrementApplicants(0); // refresh progress using stored applicants
+    }
+
+    // simulate applicants incrementing during landing for motion
+    (function simulateApplicants(){
+      incrementApplicants(0); // initial render
+      const sim = setInterval(()=>{
+        incrementApplicants(Math.floor(Math.random()*6)+3);
+        if (applicants >= applicantsTarget) clearInterval(sim);
+      }, 900);
+    })();
+
+    // restore existing user at start
+    restoreIfExists();
+
+    // support referrals when landing with ?ref=ID (demo: store hit)
+    (function checkReferralHit(){
+      const params = new URLSearchParams(location.search);
+      const ref = params.get('ref');
+      if (!ref) return;
+      try {
+        const key = storageKeyFor(ref);
+        const obj = JSON.parse(localStorage.getItem(key) || '{}');
+        obj.hits = (obj.hits || 0) + 1;
+        localStorage.setItem(key, JSON.stringify(obj));
+        // optionally: if owner is on same device, increment share count (demo)
+        console.log('Referral hit for', ref);
+      } catch(e){}
+    })();
+
+  })();
   </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
