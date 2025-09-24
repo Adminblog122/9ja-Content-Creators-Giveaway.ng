@@ -12,6 +12,7 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
+    /* === GLOBAL STYLES === */
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(180deg, #071129 0%, #081329 40%, #061026 100%);
@@ -19,13 +20,18 @@
       overflow-x: hidden;
     }
 
-    /* Loading screen */
+    h1, h2, h3, h4 {
+      font-weight: bold;
+    }
+
+    /* === LOADING SCREEN === */
     #loading-screen {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: #0f1723;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 9999;
@@ -39,12 +45,13 @@
     }
 
     .spinner {
-      width: 60px;
-      height: 60px;
-      border: 6px solid rgba(255,255,255,0.2);
-      border-top: 6px solid #ffb703;
+      width: 70px;
+      height: 70px;
+      border: 8px solid rgba(255,255,255,0.2);
+      border-top: 8px solid #ffb703;
       border-radius: 50%;
       animation: spin 1s linear infinite;
+      margin-bottom: 15px;
     }
 
     @keyframes spin {
@@ -52,10 +59,10 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Hero Section */
+    /* === HERO SECTION === */
     .hero {
       text-align: center;
-      padding: 100px 20px;
+      padding: 120px 20px 80px;
     }
 
     .hero h1 {
@@ -66,18 +73,18 @@
 
     .hero p {
       max-width: 600px;
-      margin: 0 auto;
+      margin: 15px auto 0;
       color: #c9dff9;
     }
 
-    /* Applicants counter */
+    /* === COUNTER SECTION === */
     .counter {
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: bold;
       color: #00ffcc;
     }
 
-    /* Testimonials */
+    /* === TESTIMONIALS === */
     .testimonial {
       background: rgba(255,255,255,0.05);
       padding: 20px;
@@ -96,9 +103,10 @@
       height: 80px;
       border-radius: 50%;
       margin-bottom: 10px;
+      border: 2px solid #ffb703;
     }
 
-    /* Claim button */
+    /* === CLAIM BUTTON === */
     #claimBtn {
       display: none;
       background: linear-gradient(90deg, #ffb703, #ff8800);
@@ -115,6 +123,7 @@
       background: linear-gradient(90deg, #ff8800, #ffb703);
     }
 
+    /* === FOOTER === */
     footer {
       text-align: center;
       padding: 20px;
@@ -126,27 +135,25 @@
 </head>
 <body>
 
-  <!-- Loading Screen -->
+  <!-- LOADING SCREEN -->
   <div id="loading-screen">
-    <div class="text-center">
-      <div class="spinner"></div>
-      <h3 class="mt-3 text-white">Loading...</h3>
-    </div>
+    <div class="spinner"></div>
+    <h3 class="text-white">Loading...</h3>
   </div>
 
-  <!-- Hero Section -->
+  <!-- HERO SECTION -->
   <section class="hero" data-aos="fade-up">
     <h1>Naija Creator Boost</h1>
     <p>Help Nigerian creators kickstart their content journey! Apply, share, and unlock exclusive gadgets to create amazing videos without spending a dime.</p>
   </section>
 
-  <!-- Live Applicants Counter -->
+  <!-- LIVE APPLICANTS COUNTER -->
   <section class="text-center my-5" data-aos="zoom-in">
     <h3>Total Applicants Today</h3>
     <div id="applicantsCounter" class="counter">0</div>
   </section>
 
-  <!-- Application Form -->
+  <!-- APPLICATION FORM -->
   <section class="container my-5" id="apply" data-aos="fade-up">
     <h2 class="text-center mb-4">Apply Now</h2>
     <form id="applyForm" class="mx-auto" style="max-width: 500px;">
@@ -164,7 +171,7 @@
     </form>
   </section>
 
-  <!-- Share Panel -->
+  <!-- SHARE PANEL -->
   <section class="container text-center my-5" id="sharePanel" style="display:none;" data-aos="fade-up">
     <h2>Share & Unlock Giveaway</h2>
     <p>Share your unique referral link <strong>3 times</strong> to unlock the claim button.</p>
@@ -182,7 +189,7 @@
     <button id="claimBtn" onclick="unlockGiveaway()">Claim Giveaway</button>
   </section>
 
-  <!-- Testimonials -->
+  <!-- TESTIMONIALS -->
   <section class="container my-5">
     <h2 class="text-center mb-4" data-aos="fade-up">What Our Creators Say</h2>
     <div class="row g-4">
@@ -210,7 +217,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer>
     &copy; 2025 Naija Creator Boost. All rights reserved.
   </footer>
@@ -224,14 +231,14 @@
   <script>
     AOS.init();
 
-    // Loading Screen
+    /* === LOADING SCREEN === */
     window.addEventListener("load", function() {
       setTimeout(() => {
         document.getElementById("loading-screen").classList.add("hidden");
       }, 1000);
     });
 
-    // Live Applicants Counter
+    /* === LIVE APPLICANTS COUNTER === */
     let applicants = 0;
     const counterElement = document.getElementById("applicantsCounter");
     const target = 1250; // example total
@@ -244,9 +251,9 @@
       }
     }, 100);
 
-    // Share Progress Logic
+    /* === SHARE LOGIC === */
     let shareCount = 0;
-    const referralLink = encodeURIComponent("https://yourdomain.com?ref=USER123"); // replace with your real domain
+    const referralLink = encodeURIComponent("https://yourdomain.com?ref=USER123"); // change to your real domain
 
     function shareLink(platform) {
       let shareURL = "";
@@ -263,7 +270,6 @@
 
       window.open(shareURL, "_blank");
 
-      // Track share count
       incrementShare();
     }
 
@@ -280,7 +286,7 @@
       alert("🎉 Congratulations! Your giveaway has been unlocked. We will contact you soon!");
     }
 
-    // Confetti Animation
+    /* === CONFETTI === */
     function launchConfetti() {
       confetti({
         particleCount: 150,
@@ -289,7 +295,7 @@
       });
     }
 
-    // Show share panel after form submission
+    /* === SHOW SHARE PANEL AFTER APPLY === */
     document.getElementById("applyForm").addEventListener("submit", function(e) {
       e.preventDefault();
       document.getElementById("applyForm").style.display = "none";
