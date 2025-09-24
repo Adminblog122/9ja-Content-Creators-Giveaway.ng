@@ -1,525 +1,280 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Naija Creator Boost — Share & Unlock Giveaway</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naija Creator Boost</title>
 
-  <!-- Bootstrap CSS -->
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- AOS Scroll Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
-    :root{
-      --brand:#0d6efd;
-      --accent:#ffb703;
-      --bg:#0f1723;
-    }
-    body{
-      font-family: "Poppins", system-ui, Arial, sans-serif;
+    body {
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(180deg, #071129 0%, #081329 40%, #061026 100%);
-      color: #e6eef8;
-      min-height: 100vh;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      color: #fff;
+      overflow-x: hidden;
     }
 
-    /* Container card */
-    .hero-card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      border: 1px solid rgba(255,255,255,0.04);
-      padding: 28px;
-      border-radius: 16px;
-      box-shadow: 0 8px 40px rgba(2,6,23,0.6);
+    /* Loading screen */
+    #loading-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #0f1723;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
     }
 
-    .brand {
-      font-weight:700;
-      color: var(--accent);
-      letter-spacing: .6px;
+    #loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
     }
 
-    .lead-light { color: #cfe7ff; opacity: .9; }
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(255,255,255,0.2);
+      border-top: 6px solid #ffb703;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
 
-    .feature {
-      background: rgba(255,255,255,0.03);
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    .hero h1 {
+      font-weight: 700;
+      font-size: 2.8rem;
+      color: #ffb703;
+    }
+
+    .hero p {
+      max-width: 600px;
+      margin: 0 auto;
+      color: #c9dff9;
+    }
+
+    /* Applicants counter */
+    .counter {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00ffcc;
+    }
+
+    /* Testimonials */
+    .testimonial {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
       border-radius: 10px;
-      padding: 18px;
-      transition: transform .22s, box-shadow .22s;
-    }
-    .feature:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(2,6,23,0.6); }
-
-    /* Share progress */
-    .progress .progress-bar {
-      background: linear-gradient(90deg,var(--accent),var(--brand));
+      text-align: center;
+      transition: 0.3s;
     }
 
-    /* Floating robot (fun) */
-    .robot {
-      width:72px; height:72px; position: absolute; right: -20px; top: -30px;
-      opacity: .95; transform: rotate(-8deg);
-      transition: transform .4s ease;
+    .testimonial:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.1);
     }
-    .robot.dance { transform: translateY(-6px) rotate(8deg); animation: dance 0.9s ease-in-out infinite; }
-    @keyframes dance { 0% { transform: translateY(0) rotate(-4deg);} 50% { transform: translateY(-8px) rotate(8deg);} 100% { transform: translateY(0) rotate(-4deg);} }
 
-    /* CTA button */
-    .btn-cta {
-      background: linear-gradient(90deg,var(--brand),#2563eb);
+    .testimonial img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    /* Claim button */
+    #claimBtn {
+      display: none;
+      background: linear-gradient(90deg, #ffb703, #ff8800);
       border: none;
       color: white;
-      box-shadow: 0 8px 30px rgba(13,110,253,0.14);
+      font-weight: bold;
+      padding: 12px 20px;
+      border-radius: 8px;
+      transition: 0.3s;
     }
 
-    /* small helpers */
-    .muted { color: rgba(255,255,255,0.7); }
-    .small-note { font-size: .92rem; color: #c9dff9; opacity:.85; }
-    .share-btn { min-width: 120px; }
-
-    /* responsive tweaks */
-    @media (max-width: 768px) {
-      .robot { display:none; }
+    #claimBtn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #ff8800, #ffb703);
     }
-    /* Loading screen styles */
-#loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #0f1723; /* dark background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 999999; /* stays on top */
-  transition: opacity 5.5s ease;
-}
 
-.loading-content {
-  text-align: center;
-  color: #ffffff;
-}
-
-.loading-content h2 {
-  margin-top: 20px;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.loading-content p {
-  font-size: 0.9rem;
-  color: #c9dff9;
-}
-
-/* Spinner animation */
-.spinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid rgba(255,255,255,0.2);
-  border-top: 6px solid #ffb703;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Hidden state */
-#loading-screen.hidden {
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+      color: #c9dff9;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
-<!-- Loading Screen -->
-<div id="loading-screen">
-  <div class="loading-content">
-    <div class="spinner"></div>
-    <h2>Loading...</h2>
-    <p>Please wait while we get things ready</p>
-  </div>
-</div>
 
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-10">
-        <div class="hero-card position-relative overflow-hidden">
-          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><circle cx='100' cy='100' r='100' fill='%23ffb703'/></svg>" alt="robot" class="robot" id="robotIcon" />
-          <div class="row align-items-center">
-            <div class="col-md-6 pe-md-5">
-              <h1 class="mb-2"><span class="brand">Naija Creator Boost</span></h1>
-              <p class="lead lead-light">A free giveaway program to help new Nigerian creators start content creation. No gadget? No problem — share the link and unlock a chance to win.</p>
-
-              <div class="mt-4 mb-3">
-                <div class="d-flex gap-2">
-                  <button class="btn btn-ghost btn-sm btn-outline-light" id="howItWorksBtn">How it works</button>
-                  <a class="btn btn-ghost btn-sm btn-outline-light" href="#apply">Apply Now</a>
-                </div>
-              </div>
-
-              <div class="row g-3 mt-4">
-                <div class="col-12 col-sm-6">
-                  <div class="feature">
-                    <h6 class="mb-1">🎁 Giveaway</h6>
-                    <p class="small-note mb-0">Win a starter kit — phone, mic &amp; basic lighting.</p>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6">
-                  <div class="feature">
-                    <h6 class="mb-1">📢 Viral Sharing</h6>
-                    <p class="small-note mb-0">Share your unique referral link to unlock the prize claim button.</p>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="feature">
-                    <h6 class="mb-1">📊 Track Progress</h6>
-                    <p class="small-note mb-0">See how many successful shares you've done in real-time.</p>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                  <div class="feature">
-                    <h6 class="mb-1">🇳🇬 For Nigerians</h6>
-                    <p class="small-note mb-0">Eligible applicants must be resident in Nigeria.</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="col-md-6 ps-md-5 mt-4 mt-md-0">
-              <div class="card bg-transparent border-0">
-                <div class="card-body p-0">
-                  <h5 class="mb-3">Apply & Share to Unlock</h5>
-
-                  <!-- Application Form -->
-                  <form id="applyForm" class="row g-2" autocomplete="off">
-                    <div class="col-12">
-                      <label class="muted small-note">Full name</label>
-                      <input required id="name" class="form-control form-control-lg bg-dark text-white" placeholder="Jane Doe"/>
-                    </div>
-                    <div class="col-12">
-                      <label class="muted small-note">Phone (WhatsApp number)</label>
-                      <input required id="phone" class="form-control bg-dark text-white" placeholder="+234 812 345 6789"/>
-                    </div>
-                    <div class="col-12">
-                      <label class="muted small-note">Content Category</label>
-                      <select id="category" class="form-select bg-dark text-white">
-                        <option>Comedy / Skits</option>
-                        <option>Beauty / Fashion</option>
-                        <option>Education / Tutorials</option>
-                        <option>Music / Audio</option>
-                        <option>Gaming</option>
-                        <option>Other</option>
-                      </select>
-                    </div>
-
-                    <div class="col-12">
-                      <label class="muted small-note">Short pitch (1 line)</label>
-                      <input id="pitch" class="form-control bg-dark text-white" placeholder="Why you should win (one line)"/>
-                    </div>
-
-                    <div class="col-12 d-grid mt-2">
-                      <button type="submit" class="btn btn-cta btn-lg">Submit Application</button>
-                    </div>
-                    <div class="col-12 text-center mt-2 small-note">
-                      <em>After submit you will receive a unique share link — share it <strong id="requiredSharesDisplay">3</strong> times to unlock the claim button.</em>
-                    </div>
-                  </form>
-
-                  <!-- After submit: share & progress (hidden initially) -->
-                  <div id="sharePanel" class="mt-3" style="display:none;">
-                    <div class="mb-2">
-                      <div class="small-note">Your Referral Link</div>
-                      <div class="d-flex gap-2 align-items-center">
-                        <input id="refLink" class="form-control bg-dark text-white" readonly />
-                        <button id="copyBtn" class="btn btn-outline-light">Copy</button>
-                      </div>
-                    </div>
-
-                    <div class="mb-2">
-                      <div class="d-flex justify-content-between align-items-center small-note mb-1">
-                        <div>Share Progress</div>
-                        <div><strong id="shareCount">0</strong>/<strong id="requiredShares">3</strong></div>
-                      </div>
-                      <div class="progress" style="height:12px;">
-                        <div id="shareProgress" class="progress-bar" role="progressbar" style="width:0%"></div>
-                      </div>
-                    </div>
-
-                    <div class="d-grid gap-2 d-md-flex">
-                      <button class="btn btn-light share-btn" id="whatsappBtn">WhatsApp</button>
-                      <button class="btn btn-light share-btn" id="facebookBtn">Facebook</button>
-                      <button class="btn btn-light share-btn" id="telegramBtn">Telegram</button>
-                      <button class="btn btn-light share-btn" id="twitterBtn">Twitter</button>
-                      <button class="btn btn-outline-light share-btn" id="nativeShareBtn">Share</button>
-                    </div>
-
-                    <div class="mt-3 text-center">
-                      <button id="claimBtn" class="btn btn-success" style="display:none;">Claim Giveaway</button>
-                    </div>
-
-                    <div class="mt-3 small-note">Tip: share on WhatsApp groups & status for fast unlock.</div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-          </div> <!-- row -->
-        </div> <!-- hero-card -->
-      </div>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="text-center">
+      <div class="spinner"></div>
+      <h3 class="mt-3 text-white">Loading...</h3>
     </div>
   </div>
-<script>
-  // Hide loader when everything is fully loaded
-  window.addEventListener("load", function() {
-    const loader = document.getElementById("loading-screen");
-    setTimeout(() => {
-      loader.classList.add("hidden");
-    }, 800); // wait 0.8s before fading out
-  });
-</script>
 
-  <!-- Minimal script: generate link, share counting, unlocking -->
+  <!-- Hero Section -->
+  <section class="hero" data-aos="fade-up">
+    <h1>Naija Creator Boost</h1>
+    <p>Help Nigerian creators kickstart their content journey! Apply, share, and unlock exclusive gadgets to create amazing videos without spending a dime.</p>
+  </section>
+
+  <!-- Live Applicants Counter -->
+  <section class="text-center my-5" data-aos="zoom-in">
+    <h3>Total Applicants Today</h3>
+    <div id="applicantsCounter" class="counter">0</div>
+  </section>
+
+  <!-- Application Form -->
+  <section class="container my-5" id="apply" data-aos="fade-up">
+    <h2 class="text-center mb-4">Apply Now</h2>
+    <form id="applyForm" class="mx-auto" style="max-width: 500px;">
+      <input type="text" id="name" class="form-control mb-3" placeholder="Full Name" required>
+      <input type="tel" id="phone" class="form-control mb-3" placeholder="WhatsApp Number" required>
+      <select id="category" class="form-select mb-3" required>
+        <option value="">Choose Content Type</option>
+        <option>Comedy</option>
+        <option>Fashion</option>
+        <option>Music</option>
+        <option>Education</option>
+        <option>Gaming</option>
+      </select>
+      <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+  </section>
+
+  <!-- Share Panel -->
+  <section class="container text-center my-5" id="sharePanel" style="display:none;" data-aos="fade-up">
+    <h2>Share & Unlock Giveaway</h2>
+    <p>Share your unique referral link <strong>3 times</strong> to unlock the claim button.</p>
+
+    <div class="d-flex justify-content-center gap-3 my-3">
+      <button class="btn btn-success" onclick="incrementShare()">WhatsApp</button>
+      <button class="btn btn-info" onclick="incrementShare()">Facebook</button>
+      <button class="btn btn-warning" onclick="incrementShare()">Telegram</button>
+    </div>
+
+    <div class="my-3">
+      Progress: <span id="shareCount">0</span>/3
+    </div>
+
+    <button id="claimBtn" onclick="unlockGiveaway()">Claim Giveaway</button>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="container my-5">
+    <h2 class="text-center mb-4" data-aos="fade-up">What Our Creators Say</h2>
+    <div class="row g-4">
+      <div class="col-md-4" data-aos="fade-right">
+        <div class="testimonial">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+          <p>"This platform helped me get my first phone for content creation!"</p>
+          <strong>- Chioma, Lagos</strong>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up">
+        <div class="testimonial">
+          <img src="https://randomuser.me/api/portraits/men/36.jpg" alt="">
+          <p>"I was stuck before, but now I create videos daily thanks to this giveaway!"</p>
+          <strong>- Emeka, Abuja</strong>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-left">
+        <div class="testimonial">
+          <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="">
+          <p>"Sharing was easy and fun. I recommend this to every Nigerian creator."</p>
+          <strong>- Amina, Kano</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Naija Creator Boost. All rights reserved.
+  </footer>
+
+  <!-- Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+  <!-- AOS Library -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
   <script>
-    (function(){
-      const REQUIRED_SHARES = 3; // number of shares required to unlock
-      const applyForm = document.getElementById('applyForm');
-      const sharePanel = document.getElementById('sharePanel');
-      const refLinkInput = document.getElementById('refLink');
-      const shareCountEl = document.getElementById('shareCount');
-      const requiredSharesEl = document.getElementById('requiredShares');
-      const shareProgress = document.getElementById('shareProgress');
-      const copyBtn = document.getElementById('copyBtn');
-      const claimBtn = document.getElementById('claimBtn');
-      const whatsappBtn = document.getElementById('whatsappBtn');
-      const facebookBtn = document.getElementById('facebookBtn');
-      const telegramBtn = document.getElementById('telegramBtn');
-      const twitterBtn = document.getElementById('twitterBtn');
-      const nativeShareBtn = document.getElementById('nativeShareBtn');
-      const robot = document.getElementById('robotIcon');
-      const requiredSharesDisplay = document.getElementById('requiredSharesDisplay');
+    AOS.init();
 
-      requiredSharesEl.textContent = REQUIRED_SHARES;
-      requiredSharesDisplay.textContent = REQUIRED_SHARES;
+    // Loading Screen
+    window.addEventListener("load", function() {
+      setTimeout(() => {
+        document.getElementById("loading-screen").classList.add("hidden");
+      }, 1000);
+    });
 
-      // get/generate applicant id and share count from localStorage for persistence
-      function getStorageKey(id){ return 'nc_visitor_' + id; }
+    // Live Applicants Counter
+    let applicants = 0;
+    const counterElement = document.getElementById("applicantsCounter");
+    const target = 1250; // example total
 
-      function generateId(){
-        // simple unique id: time + random
-        return 'c' + Date.now().toString(36) + Math.floor(Math.random()*900+100);
+    const counterInterval = setInterval(() => {
+      applicants += Math.floor(Math.random() * 10) + 5;
+      counterElement.textContent = applicants;
+      if (applicants >= target) {
+        clearInterval(counterInterval);
       }
+    }, 100);
 
-      // update UI progress
-      function updateProgress(count){
-        shareCountEl.textContent = count;
-        const pct = Math.min(100, Math.round((count / REQUIRED_SHARES) * 100));
-        shareProgress.style.width = pct + '%';
-        if (count >= REQUIRED_SHARES) {
-          claimBtn.style.display = 'inline-block';
-          robot.classList.add('dance');
-        } else {
-          claimBtn.style.display = 'none';
-          robot.classList.remove('dance');
-        }
+    // Share Progress Logic
+    let shareCount = 0;
+
+    function incrementShare() {
+      shareCount++;
+      document.getElementById("shareCount").textContent = shareCount;
+      if (shareCount >= 3) {
+        document.getElementById("claimBtn").style.display = "inline-block";
+        launchConfetti();
       }
+    }
 
-      // copy link helper
-      copyBtn.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(refLinkInput.value);
-          copyBtn.textContent = 'Copied!';
-          setTimeout(()=> copyBtn.textContent = 'Copy', 1500);
-          // count a copy as a share (optional)
-          incrementShare();
-        } catch(e){
-          alert('Copy failed. Please select and copy manually.');
-        }
+    function unlockGiveaway() {
+      alert("🎉 Congratulations! Your giveaway has been unlocked. We will contact you soon!");
+    }
+
+    // Confetti Animation
+    function launchConfetti() {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
       });
+    }
 
-      // increment share and persist
-      function incrementShare(){
-        const id = localStorage.getItem('nc_current_id');
-        if (!id) return;
-        const key = getStorageKey(id);
-        let state = JSON.parse(localStorage.getItem(key) || '{}');
-        state.count = (state.count || 0) + 1;
-        localStorage.setItem(key, JSON.stringify(state));
-        updateProgress(state.count);
-      }
-
-      // Create share URL with referral
-      function buildReferralUrl(id){
-        const base = location.origin + location.pathname;
-        return base + '?ref=' + encodeURIComponent(id);
-      }
-
-      // generic share action opens share URL and increments
-      function doShare(platform){
-        const id = localStorage.getItem('nc_current_id');
-        if (!id) return;
-        const url = buildReferralUrl(id);
-        let shareText = encodeURIComponent('I just applied for Naija Creator Boost — help me unlock the giveaway! Join here: ' + url);
-        let target = '';
-        if (platform === 'whatsapp') {
-          target = 'https://api.whatsapp.com/send?text=' + shareText;
-        } else if (platform === 'facebook') {
-          target = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
-        } else if (platform === 'telegram') {
-          target = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + shareText;
-        } else if (platform === 'twitter') {
-          target = 'https://twitter.com/intent/tweet?text=' + shareText;
-        }
-        // open share in new tab
-        window.open(target, '_blank');
-        // increment share count after opening
-        setTimeout(incrementShare, 800);
-      }
-
-      // Native share API
-      nativeShareBtn.addEventListener('click', async () => {
-        const id = localStorage.getItem('nc_current_id');
-        if (!id) return;
-        const url = buildReferralUrl(id);
-        try {
-          if (navigator.share) {
-            await navigator.share({ title: 'Naija Creator Boost', text: 'Help me unlock this giveaway!', url });
-            incrementShare();
-          } else {
-            // fallback: copy
-            await navigator.clipboard.writeText(url);
-            alert('Link copied to clipboard — paste it into chats to share.');
-            incrementShare();
-          }
-        } catch(e) {
-          // user cancelled or error
-          console.log('Share cancelled or failed', e);
-        }
-      });
-
-      whatsappBtn.addEventListener('click', ()=> doShare('whatsapp'));
-      facebookBtn.addEventListener('click', ()=> doShare('facebook'));
-      telegramBtn.addEventListener('click', ()=> doShare('telegram'));
-      twitterBtn.addEventListener('click', ()=> doShare('twitter'));
-
-      // Claim button action (demo behavior)
-      claimBtn.addEventListener('click', () => {
-        const id = localStorage.getItem('nc_current_id');
-        if (!id) return;
-        // Mark claimed
-        const key = getStorageKey(id);
-        let state = JSON.parse(localStorage.getItem(key) || '{}');
-        state.claimed = true;
-        localStorage.setItem(key, JSON.stringify(state));
-        alert('Congratulations! Your giveaway claim request has been recorded. We will contact you via WhatsApp.');
-        claimBtn.disabled = true;
-        claimBtn.textContent = 'Claimed';
-      });
-
-      // On form submit: create id, show share panel
-      applyForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        // get form values (basic validation)
-        const name = document.getElementById('name').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const category = document.getElementById('category').value;
-        const pitch = document.getElementById('pitch').value.trim();
-
-        if (!name || !phone) {
-          alert('Please enter your name and phone.');
-          return;
-        }
-
-        // create id and save applicant data (localStorage demo)
-        const id = generateId();
-        localStorage.setItem('nc_current_id', id);
-        const key = getStorageKey(id);
-        const payload = {
-          id, name, phone, category, pitch,
-          createdAt: new Date().toISOString(),
-          count: 0,
-          claimed: false
-        };
-        localStorage.setItem(key, JSON.stringify(payload));
-
-        // show share panel and fill link
-        const referral = buildReferralUrl(id);
-        refLinkInput.value = referral;
-        sharePanel.style.display = 'block';
-        applyForm.style.display = 'none';
-
-        // update progress
-        updateProgress(0);
-
-        // Optionally show robot dancing hint
-        robot.classList.add('dance');
-      });
-
-      // If page loaded with ?ref=... you can capture referrals (basic demo)
-      function checkReferralOnLoad(){
-        const params = new URLSearchParams(location.search);
-        const ref = params.get('ref');
-        if (ref){
-          // simulate storing that someone visited with referral 'ref'
-          // in production you'd notify server to increment referral count
-          // Here we show a friendly message and persist a small counted hit
-          try {
-            const key = getStorageKey(ref);
-            let state = JSON.parse(localStorage.getItem(key) || '{}');
-            state.hits = (state.hits || 0) + 1;
-            localStorage.setItem(key, JSON.stringify(state));
-            // Show a subtle toast for demo (non-blocking)
-            console.log('Referral hit recorded for', ref);
-          } catch(e){}
-        }
-      }
-
-      // On init, if user has previously applied, restore progress
-      function restoreIfExisting(){
-        const id = localStorage.getItem('nc_current_id');
-        if (!id) return;
-        const key = getStorageKey(id);
-        const state = JSON.parse(localStorage.getItem(key) || '{}');
-        if (!state) return;
-        // if claimed, show claimed state
-        if (state.claimed) {
-          applyForm.style.display = 'none';
-          sharePanel.style.display = 'block';
-          refLinkInput.value = buildReferralUrl(id);
-          updateProgress(state.count || 0);
-          claimBtn.disabled = true;
-          claimBtn.textContent = state.claimed ? 'Claimed' : 'Claim Giveaway';
-        } else {
-          applyForm.style.display = 'none';
-          sharePanel.style.display = 'block';
-          refLinkInput.value = buildReferralUrl(id);
-          updateProgress(state.count || 0);
-        }
-      }
-
-      // simple page-level event for "how it works"
-      document.getElementById('howItWorksBtn').addEventListener('click', ()=> {
-        alert('1) Apply with basic details. 2) Share your referral link to at least ' + REQUIRED_SHARES + ' people/groups. 3) After successful shares, the Claim button unlocks. Winners will be contacted via WhatsApp.');
-      });
-
-      // run init
-      checkReferralOnLoad();
-      restoreIfExisting();
-
-    })();
+    // Show share panel after form submission
+    document.getElementById("applyForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      document.getElementById("applyForm").style.display = "none";
+      document.getElementById("sharePanel").style.display = "block";
+    });
   </script>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
